@@ -1,0 +1,42 @@
+name: Debug APK
+
+on:
+    push:
+        branches:
+            - ci-debug-apk
+
+jobs:
+    debug:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Java
+              uses: actions/setup-java@v5
+              with:
+                  distribution: "zulu"
+                  java-version: "17"
+                  cache: "gradle"
+                  cache-dependency-path: |
+                      android/*.gradle*
+                      android/**/gradle-wrapper.properties
+
+            - name: Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  channel: stable
+                  flutter-version-file: pubspec.yaml
+
+            - name: Dependencies
+              run: flutter pub get
+
+            - name: Build debug arm64
+              run: flutter build apk --debug --target-platform android-arm64
+
+            - name: Upload
+              uses: actions/upload-artifact@v7
+              with:
+                  name: debug-arm64
+                  path: build/app/outputs/flutter-apk/app-debug.apk
+                  if-no-files-found: error
