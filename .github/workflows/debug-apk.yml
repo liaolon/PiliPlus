@@ -1,4 +1,4 @@
-name: Dev APK
+name: Debug APK
 
 on:
     push:
@@ -31,12 +31,16 @@ jobs:
             - name: Dependencies
               run: flutter pub get
 
-            - name: Build dev apk arm64
-              run: flutter build apk --release --target-platform android-arm64 --android-project-arg dev=1
+            - name: Apply Patch
+              shell: pwsh
+              run: lib/scripts/patch.ps1 android
+
+            - name: Build debug arm64
+              run: flutter build apk --debug --target-platform android-arm64
 
             - name: Upload
               uses: actions/upload-artifact@v7
               with:
-                  name: dev-arm64
-                  path: build/app/outputs/flutter-apk/app-release.apk
+                  name: debug-arm64
+                  path: build/app/outputs/flutter-apk/app-debug.apk
                   if-no-files-found: error
