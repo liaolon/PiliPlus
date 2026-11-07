@@ -122,7 +122,7 @@ Future<void> _showRcmdSourceDialog(
       values: RcmdSource.values.map((e) => (e, e.label)).toList(),
       subtitleBuilder: (context, index) {
         if (RcmdSource.values[index] != RcmdSource.desktop) {
-          return const SizedBox.shrink();
+          return null;
         }
         return const Text(
           '沿用公开的网页推荐接口，按哔哩哔哩官方 Windows 客户端'
